@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT461 Web Systems and Technology — Course Registration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1E2A38;
+    --paper: #F4F5F1;
+    --paper-raised: #FFFFFF;
+    --line: #D3D6CE;
+    --brass: #8C6A34;
+    --brass-dark: #6E5228;
+    --success: #2F6B49;
+    --success-bg: #E7F0E9;
+    --error: #A6362A;
+    --error-bg: #F8E9E7;
+    --muted: #5B6472;
+    --focus-ring: #2F5D9C;
+    --radius: 3px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { color-scheme: light; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, Segoe UI, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--brass-dark); }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -999px;
+    top: auto;
+    background: var(--ink);
+    color: #fff;
+    padding: 0.75em 1.25em;
+    z-index: 100;
+    border-radius: var(--radius);
+  }
+  .skip-link:focus {
+    left: 1rem;
+    top: 1rem;
+  }
+
+  header.masthead {
+    border-bottom: 3px solid var(--ink);
+    background: var(--paper-raised);
+  }
+
+  .masthead-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.75rem 1.5rem 1.5rem;
+  }
+
+  .course-tag {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--brass-dark);
+    letter-spacing: 0.02em;
+    margin: 0 0 0.35rem;
+  }
+
+  h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    margin: 0 0 0.5rem;
+    line-height: 1.25;
+  }
+
+  .masthead p.lede {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.98rem;
+    max-width: 60ch;
+  }
+
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  form {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  fieldset {
+    border: none;
+    border-bottom: 1px solid var(--line);
+    padding: 1.5rem 1.5rem 1.75rem;
+    margin: 0;
+  }
+
+  fieldset:last-of-type {
+    border-bottom: none;
+  }
+
+  legend {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: 1.15rem;
+    padding: 0 0.35rem;
+    margin-left: -0.35rem;
+  }
+
+  .field {
+    margin-top: 1.1rem;
+  }
+  .field:first-of-type {
+    margin-top: 1.25rem;
+  }
+
+  label {
+    display: block;
+    font-weight: 500;
+    font-size: 0.92rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .hint {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  select {
+    width: 100%;
+    font: inherit;
+    font-size: 0.98rem;
+    padding: 0.6rem 0.7rem;
+    border: 1px solid #B8BCB2;
+    border-radius: var(--radius);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  button:focus-visible,
+  a:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  input[aria-invalid="true"],
+  select[aria-invalid="true"] {
+    border-color: var(--error);
+    background: var(--error-bg);
+  }
+
+  .error-msg {
+    display: none;
+    color: var(--error);
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+    font-weight: 500;
+  }
+  .error-msg.visible {
+    display: block;
+  }
+
+  .seat-status {
+    margin-top: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--radius);
+    display: inline-block;
+  }
+  .seat-status.open {
+    background: var(--success-bg);
+    color: var(--success);
+  }
+  .seat-status.full {
+    background: var(--error-bg);
+    color: var(--error);
+  }
+
+  .actions {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  button[type="submit"] {
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.98rem;
+    background: var(--ink);
+    color: #fff;
+    border: 1px solid var(--ink);
+    padding: 0.7rem 1.4rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  button[type="submit"]:hover {
+    background: var(--brass-dark);
+    border-color: var(--brass-dark);
+  }
+  button[type="submit"]:disabled {
+    background: #9BA19A;
+    border-color: #9BA19A;
+    cursor: not-allowed;
+  }
+
+  #form-status {
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+  #form-status.success { color: var(--success); }
+  #form-status.error { color: var(--error); }
+
+  .confirmation {
+    margin-top: 1.25rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--success);
+    background: var(--success-bg);
+    border-radius: var(--radius);
+    color: var(--success);
+    font-size: 0.95rem;
+    display: none;
+  }
+  .confirmation.visible { display: block; }
+
+  footer.page-footer {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.5rem 2.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--line);
+    padding-top: 1.25rem;
+  }
+
+  @media (max-width: 480px) {
+    .masthead-inner, main, footer.page-footer { padding-left: 1rem; padding-right: 1rem; }
+    fieldset { padding-left: 1rem; padding-right: 1rem; }
+    .actions { flex-direction: column; align-items: stretch; }
+    button[type="submit"] { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#registration-form">Skip to registration form</a>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <p class="course-tag">ICT461 · Web Systems and Technology · Unit 1, Lecture 1</p>
+    <h1>Course Registration</h1>
+    <p class="lede">Register for an available ICT461 tutorial section. Fields marked "required" must be completed before the registration can be submitted.</p>
+  </div>
+</header>
+
+<main>
+  <form id="registration-form" novalidate>
+    <fieldset>
+      <legend>Student details</legend>
+
+      <div class="field">
+        <label for="full-name">Full name <span aria-hidden="true">*</span> <span class="visually-hidden">(required)</span></label>
+        <input type="text" id="full-name" name="full-name" autocomplete="name" required aria-describedby="full-name-error" aria-invalid="false">
+        <p class="error-msg" id="full-name-error" role="alert">Enter your full name.</p>
+      </div>
+
+      <div class="field">
+        <label for="student-id">Student ID <span aria-hidden="true">*</span></label>
+        <input type="text" id="student-id" name="student-id" required aria-describedby="student-id-hint student-id-error" aria-invalid="false" placeholder="e.g. MU2024-0451">
+        <span class="hint" id="student-id-hint">Format: MU followed by year and a 4-digit number.</span>
+        <p class="error-msg" id="student-id-error" role="alert">Enter a valid student ID in the format MU2024-0451.</p>
+      </div>
+
+      <div class="field">
+        <label for="email">University email <span aria-hidden="true">*</span></label>
+        <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-error" aria-invalid="false" placeholder="name@mu.ac.zm">
+        <p class="error-msg" id="email-error" role="alert">Enter a valid university email address.</p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Section selection</legend>
+
+      <div class="field">
+        <label for="section">Tutorial section <span aria-hidden="true">*</span></label>
+        <select id="section" name="section" required aria-describedby="section-error" aria-invalid="false">
+          <option value="">Choose a section</option>
+          <option value="A" data-seats="7" data-cap="30">Section A — Mon 09:00–11:00</option>
+          <option value="B" data-seats="0" data-cap="30">Section B — Mon 13:00–15:00</option>
+          <option value="C" data-seats="15" data-cap="25">Section C — Wed 09:00–11:00</option>
+          <option value="D" data-seats="2" data-cap="20">Section D — Thu 15:00–17:00</option>
+        </select>
+        <p class="error-msg" id="section-error" role="alert">Select a section with an available seat.</p>
+        <div id="seat-status" class="seat-status" aria-live="polite" style="display:none;"></div>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit" id="submit-btn">Register for ICT461</button>
+      <span id="form-status" role="status" aria-live="polite"></span>
+    </div>
+  </form>
+
+  <div class="confirmation" id="confirmation" role="status">
+    Registration recorded for <strong id="confirm-name"></strong> in <strong id="confirm-section"></strong>. A confirmation would normally be emailed to the address provided.
+  </div>
+</main>
+
+<footer class="page-footer">
+  <p>School of Engineering — Mulungushi University. Next lecture: HTTP fundamentals.</p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var form = document.getElementById('registration-form');
+  var sectionSelect = document.getElementById('section');
+  var seatStatus = document.getElementById('seat-status');
+  var submitBtn = document.getElementById('submit-btn');
+  var formStatus = document.getElementById('form-status');
+  var confirmation = document.getElementById('confirmation');
+
+  var fields = [
+    {
+      input: document.getElementById('full-name'),
+      error: document.getElementById('full-name-error'),
+      validate: function (v) { return v.trim().length >= 2; }
+    },
+    {
+      input: document.getElementById('student-id'),
+      error: document.getElementById('student-id-error'),
+      validate: function (v) { return /^MU\d{4}-\d{4}$/i.test(v.trim()); }
+    },
+    {
+      input: document.getElementById('email'),
+      error: document.getElementById('email-error'),
+      validate: function (v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+    }
+  ];
+
+  function setFieldValidity(field, isValid) {
+    field.input.setAttribute('aria-invalid', String(!isValid));
+    field.error.classList.toggle('visible', !isValid);
+  }
+
+  // Validate text/email fields as the student leaves each one.
+  fields.forEach(function (field) {
+    field.input.addEventListener('blur', function () {
+      if (field.input.value.trim() === '') { return; } // don't scold an untouched field yet
+      setFieldValidity(field, field.validate(field.input.value));
+    });
+    field.input.addEventListener('input', function () {
+      if (field.input.getAttribute('aria-invalid') === 'true') {
+        setFieldValidity(field, field.validate(field.input.value));
+      }
+    });
+  });
+
+  // The single core JS interaction: live seat availability tied to section choice.
+  sectionSelect.addEventListener('change', function () {
+    var opt = sectionSelect.selectedOptions[0];
+    sectionSelect.setAttribute('aria-invalid', 'false');
+    document.getElementById('section-error').classList.remove('visible');
+
+    if (!opt || !opt.value) {
+      seatStatus.style.display = 'none';
+      submitBtn.disabled = false;
+      return;
+    }
+
+    var seats = parseInt(opt.getAttribute('data-seats'), 10);
+    var cap = parseInt(opt.getAttribute('data-cap'), 10);
+    seatStatus.style.display = 'inline-block';
+
+    if (seats > 0) {
+      seatStatus.textContent = seats + ' of ' + cap + ' seats remaining.';
+      seatStatus.className = 'seat-status open';
+      submitBtn.disabled = false;
+    } else {
+      seatStatus.textContent = 'This section is full — choose another section.';
+      seatStatus.className = 'seat-status full';
+      submitBtn.disabled = true;
+    }
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    confirmation.classList.remove('visible');
+
+    var allValid = true;
+
+    fields.forEach(function (field) {
+      var valid = field.validate(field.input.value);
+      setFieldValidity(field, valid);
+      if (!valid) { allValid = false; }
+    });
+
+    var opt = sectionSelect.selectedOptions[0];
+    var sectionValid = !!(opt && opt.value && parseInt(opt.getAttribute('data-seats'), 10) > 0);
+    sectionSelect.setAttribute('aria-invalid', String(!sectionValid));
+    document.getElementById('section-error').classList.toggle('visible', !sectionValid);
+    if (!sectionValid) { allValid = false; }
+
+    if (!allValid) {
+      formStatus.textContent = 'Please fix the highlighted fields before submitting.';
+      formStatus.className = 'error';
+      var firstInvalid = form.querySelector('[aria-invalid="true"]');
+      if (firstInvalid) { firstInvalid.focus(); }
+      return;
+    }
+
+    formStatus.textContent = 'Registration submitted successfully.';
+    formStatus.className = 'success';
+    document.getElementById('confirm-name').textContent = document.getElementById('full-name').value.trim();
+    document.getElementById('confirm-section').textContent = opt.textContent;
+    confirmation.classList.add('visible');
+  });
+})();
+</script>
+
+</body>
+</html>
