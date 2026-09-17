@@ -1,8 +1,8 @@
 # ICT461 — Course Registration Page
 
-**Unit 1, Lecture 1 assessment — Mulungushi University, School of Engineering**
+**Unit 1, Lecture 1 Lab 1 assignement**
 
-A single-page course registration interface for ICT461 (Web Systems and Technology), built with semantic HTML, responsive CSS, and one core JavaScript interaction.
+A single-page course registration interface, built with semantic HTML, responsive CSS, and one core JavaScript interaction.
 
 ## What's here
 
